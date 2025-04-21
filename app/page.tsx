@@ -23,7 +23,7 @@ export default function HomePage() {
     //   }
     //   setCheckingAuth(false)
     // }
-  }, []);
+  }, [router]);
   // [isAuthenticated, userType, router]
   if (checkingAuth) {
     return (
