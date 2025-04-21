@@ -109,7 +109,7 @@ export default function LoginPage() {
           <CardFooter className="flex flex-col mt-2 space-y-4">
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full cursor-pointer" 
               disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}

@@ -1,4 +1,5 @@
 export interface Classroom {
+    _id: Key | null | undefined;
     id: string;
     name: string;
     code: string;

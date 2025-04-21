@@ -175,7 +175,7 @@ export default function RegisterPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col mt-2 space-y-2">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full cursor-pointer" disabled={loading}>
               {loading ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />

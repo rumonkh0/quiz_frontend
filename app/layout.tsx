@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "EduPlatform - Learning Management System",
   description: "Interactive learning platform for students, teachers, and administrators",
-  themeColor: "#ffffff",
+  // themeColor: "#ffffff",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
