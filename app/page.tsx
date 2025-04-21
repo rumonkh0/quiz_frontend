@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export default function HomePage() {
   // const { isAuthenticated, userType } = useAuth()
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {

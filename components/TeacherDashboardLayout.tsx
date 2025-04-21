@@ -1,14 +1,22 @@
-'use client';
+"use client";
 
-import { ReactNode, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { logout } from '@/store/slices/authSlice';
-import { Button } from '@/components/ui/button';
-import { BookOpen, GraduationCap, Home, LayoutDashboard, LogOut, Settings, User } from 'lucide-react';
-import AuthGuard from '@/components/auth/auth-guard';
-import { Loader2 } from 'lucide-react';
+import { ReactNode, useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { logout } from "@/store/slices/authSlice";
+import { Button } from "@/components/ui/button";
+import {
+  BookOpen,
+  GraduationCap,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  User,
+} from "lucide-react";
+import AuthGuard from "@/components/auth/auth-guard";
+import { Loader2 } from "lucide-react";
 
 export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -19,16 +27,16 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Redirect if not teacher or not authenticated
-    if (!authLoading && (!user || user.role !== 'teacher')) {
-      router.push('/login');
+    if (!authLoading && (!user || user.role !== "teacher")) {
+      router.push("/login");
     }
   }, [user, authLoading, router]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await dispatch(logout()).unwrap();
-      router.push('/login');
+      await dispatch(logout());
+      router.push("/login");
     } finally {
       setIsLoggingOut(false);
     }
@@ -43,10 +51,13 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthGuard requiredRoles={['teacher']}>
+    <AuthGuard requiredRoles={["teacher"]}>
       <div className="flex min-h-screen flex-col bg-slate-50">
         <header className="sticky top-0 z-10 flex h-16 items-center border-b bg-white px-4 md:px-6">
-          <Link href="/teacher/dashboard" className="flex items-center gap-2 font-semibold">
+          <Link
+            href="/teacher/dashboard"
+            className="flex items-center gap-2 font-semibold"
+          >
             <GraduationCap className="h-6 w-6" />
             <span>EduPlatform</span>
             <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600">
@@ -66,9 +77,9 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
                 <span className="sr-only">Settings</span>
               </Link>
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleLogout}
               disabled={isLoggingOut}
             >
@@ -84,9 +95,11 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
         <div className="flex flex-1">
           <aside className="hidden w-64 border-r bg-white md:block">
             <nav className="flex flex-col gap-2 p-4">
-              <Button 
-                variant={pathname === "/teacher/dashboard" ? "default" : "ghost"} 
-                className="justify-start" 
+              <Button
+                variant={
+                  pathname === "/teacher/dashboard" ? "default" : "ghost"
+                }
+                className="justify-start"
                 asChild
               >
                 <Link href="/teacher/dashboard">
@@ -95,7 +108,9 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
                 </Link>
               </Button>
               <Button
-                variant={pathname.includes("/teacher/classes") ? "default" : "ghost"}
+                variant={
+                  pathname.includes("/teacher/classes") ? "default" : "ghost"
+                }
                 className="justify-start"
                 asChild
               >
@@ -105,7 +120,9 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
                 </Link>
               </Button>
               <Button
-                variant={pathname.includes("/teacher/analytics") ? "default" : "ghost"}
+                variant={
+                  pathname.includes("/teacher/analytics") ? "default" : "ghost"
+                }
                 className="justify-start"
                 asChild
               >
