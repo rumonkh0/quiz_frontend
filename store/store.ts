@@ -1,25 +1,31 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
+// store/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./slices/authSlice";
+import { injectStore } from "@/lib/api/axios"; // ⬅️ import this
 
 export function makeStore() {
-  return configureStore({
+  const newStore = configureStore({
     reducer: {
-      auth: authReducer
+      auth: authReducer,
     },
+    devTools: true,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
-          ignoredActions: ['auth/register/rejected', 'auth/login/rejected'],
-          ignoredPaths: ['auth.error']
-        }
-      })
+          ignoredActions: ["auth/register/rejected", "auth/login/rejected"],
+          ignoredPaths: ["auth.error"],
+        },
+      }),
   });
+
+  injectStore(newStore); // ⬅️ inject here after creation
+
+  return newStore;
 }
 
 export const store = makeStore();
 
-// Infer the type of makeStore
+// types
 export type AppStore = ReturnType<typeof makeStore>;
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
