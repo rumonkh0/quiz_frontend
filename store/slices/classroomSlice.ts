@@ -154,7 +154,7 @@ const classroomSlice = createSlice({
       })
       .addCase(updateClass.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.classes.findIndex((cls) => cls.id === action.payload.id);
+        const index = state.classes.findIndex((cls) => cls.id === action.payload._id);
         if (index !== -1) {
           state.classes[index] = action.payload;
         }

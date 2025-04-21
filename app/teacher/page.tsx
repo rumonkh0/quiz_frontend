@@ -105,7 +105,7 @@ export default function TeacherDashboard() {
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {classes.map((cls) => (
-              <Link href={`/teacher/classes/${cls._id}`} key={cls._id} className="block">
+              <Link href={`/teacher/classes/${cls.id}`} key={cls.id} className="block">
                 <Card className="h-full transition-all hover:shadow-md">
                   <CardHeader>
                     <CardTitle>{cls.name}</CardTitle>
