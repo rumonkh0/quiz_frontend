@@ -41,7 +41,7 @@ export default function LoginPage() {
       })).unwrap();
       
       // Redirect based on role
-      router.push(data.role === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
+      router.push(data.role === 'teacher' ? '/teacher' : '/student');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Error handled by Redux store

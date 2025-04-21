@@ -73,6 +73,7 @@ export default function RegisterPage() {
       if (result.user) {
         router.push("/dashboard");
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Error is handled by Redux store
     }

@@ -1,4 +1,5 @@
 import api from "@/lib/api/axios";
+import { RegisterPayload } from "@/types/auth.type";
 
 // services/auth.service.ts
 export const registerUser = async (userData: RegisterPayload) => {

@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAppSelector } from '@/store/hooks';
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppSelector } from "@/store/hooks";
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requiredRoles?: ('student' | 'teacher' | 'admin')[];
+  requiredRoles?: ("student" | "teacher" | "admin")[];
 }
 
 const AuthGuard = ({ children, requiredRoles }: AuthGuardProps) => {
@@ -17,13 +17,14 @@ const AuthGuard = ({ children, requiredRoles }: AuthGuardProps) => {
   useEffect(() => {
     // Check authentication status
     if (!token) {
-      router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+      router.push(`/login`);
+      // router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 
     // Check authorization roles
     if (requiredRoles && user?.role && !requiredRoles.includes(user.role)) {
-      router.push('/unauthorized');
+      router.push("/unauthorized");
     }
   }, [token, user, router, pathname, requiredRoles]);
 
