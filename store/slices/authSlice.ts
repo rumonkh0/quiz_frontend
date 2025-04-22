@@ -1,6 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { User, AuthState, RegisterPayload, LoginCredentials } from '@/types/auth.type';
-import api from '@/lib/api/axios';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import {
+  User,
+  AuthState,
+  RegisterPayload,
+  LoginCredentials,
+} from "@/types/auth.type";
+import api from "@/lib/api/axios";
 
 // Initial state
 const initialState: AuthState = {
@@ -12,60 +17,68 @@ const initialState: AuthState = {
 
 // Async thunks
 export const registerUser = createAsyncThunk(
-  'auth/register',
+  "auth/register",
   async (userData: RegisterPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      const response = await api.post("/auth/register", userData);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Registration failed');
+      return rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
     }
   }
 );
 
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/login', credentials);
+      const response = await api.post("/auth/login", credentials);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
+      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );
 
 export const getCurrentUser = createAsyncThunk(
-  'auth/currentUser',
+  "auth/currentUser",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get("/auth/me");
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user"
+      );
     }
   }
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ user: User; token: string }>) => {
+    setCredentials: (
+      state,
+      action: PayloadAction<{ user: User; token: string }>
+    ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('eduToken', action.payload.token);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("eduToken", action.payload.token);
       }
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('eduToken');
+      if (typeof window !== "undefined") {
+        console.log("to+++++++++++++++++++++++++++++++++++++++++++++++++++")
+        // localStorage.removeItem("eduToken");
       }
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -73,7 +86,7 @@ const authSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -86,12 +99,15 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        if (typeof window !== "undefined") {
+          localStorage.setItem("eduToken", action.payload.token);
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Login User
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -101,12 +117,15 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        if (typeof window !== "undefined") {
+          localStorage.setItem("eduToken", action.payload.token);
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Get Current User
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
@@ -120,8 +139,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-  }
+  },
 });
 
-export const { setCredentials, logout, setLoading, clearError } = authSlice.actions;
+export const { setCredentials, logout, setLoading, clearError } =
+  authSlice.actions;
 export default authSlice.reducer;

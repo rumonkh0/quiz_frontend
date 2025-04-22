@@ -15,7 +15,8 @@ export default function AuthInitializer() {
           await dispatch(getCurrentUser()).unwrap();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-          localStorage.removeItem("eduToken");
+          console.log("fk++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+          // localStorage.removeItem("eduToken");
         }
       }
     };

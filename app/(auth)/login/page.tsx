@@ -1,22 +1,29 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { loginUser } from '@/store/slices/authSlice';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { loginUser } from "@/store/slices/authSlice";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  role: z.enum(['student', 'teacher'])
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.enum(["student", "teacher"]),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -25,24 +32,31 @@ export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<LoginFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      role: 'student'
-    }
+      role: "student",
+    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await dispatch(loginUser({
-        email: data.email,
-        password: data.password,
-        role: data.role
-      })).unwrap();
-      
+      await dispatch(
+        loginUser({
+          email: data.email,
+          password: data.password,
+          role: data.role,
+        })
+      ).unwrap();
+
       // Redirect based on role
-      router.push(data.role === 'teacher' ? '/teacher' : '/student');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      router.push(data.role === "teacher" ? "/teacher" : "/student");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Error handled by Redux store
     }
@@ -53,7 +67,9 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Login to EduPlatform</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardDescription>
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
@@ -63,7 +79,7 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="your@email.com"
-                {...register('email')}
+                {...register("email")}
                 error={errors.email?.message}
               />
             </div>
@@ -73,7 +89,7 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                {...register('password')}
+                {...register("password")}
                 error={errors.password?.message}
               />
             </div>
@@ -82,16 +98,30 @@ export default function LoginPage() {
               <Label>I am a:</Label>
               <RadioGroup
                 defaultValue="student"
-                onValueChange={(value) => setValue('role', value as 'student' | 'teacher')}
+                onValueChange={(value) =>
+                  setValue("role", value as "student" | "teacher")
+                }
                 className="flex space-x-4"
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="student" id="student" />
-                  <Label htmlFor="student">Student</Label>
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <RadioGroupItem
+                    value="student"
+                    id="student"
+                    className="cursor-pointer"
+                  />
+                  <Label htmlFor="student" className="cursor-pointer">
+                    Student
+                  </Label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="teacher" id="teacher" />
-                  <Label htmlFor="teacher">Teacher</Label>
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <RadioGroupItem
+                    value="teacher"
+                    id="teacher"
+                    className="cursor-pointer"
+                  />
+                  <Label htmlFor="teacher" className="cursor-pointer">
+                    Teacher
+                  </Label>
                 </div>
               </RadioGroup>
               {errors.role?.message && (
@@ -100,27 +130,22 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="text-red-500 text-sm text-center">
-                {error}
-              </div>
+              <div className="text-red-500 text-sm text-center">{error}</div>
             )}
           </CardContent>
 
           <CardFooter className="flex flex-col mt-2 space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full cursor-pointer" 
+            <Button
+              type="submit"
+              className="w-full cursor-pointer"
               disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}
             </Button>
-            
+
             <div className="text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link 
-                href="/register" 
-                className="text-primary hover:underline"
-              >
+              <Link href="/register" className="text-primary hover:underline">
                 Register
               </Link>
             </div>

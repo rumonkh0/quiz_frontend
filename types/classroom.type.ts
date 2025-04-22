@@ -1,5 +1,5 @@
 export interface Classroom {
-    id: string;
+    _id: string;
     name: string;
     code: string;
     studentsCount: number;

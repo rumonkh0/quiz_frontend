@@ -2,39 +2,77 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store/hooks";
+import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
-  // const { isAuthenticated, userType } = useAuth()
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { user, loading } = useAppSelector((state) => state.auth);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    router.push("/register");
-    // if (isAuthenticated !== undefined && userType !== undefined) {
-    //   if (isAuthenticated) {
-    //     if (userType === "teacher") {
-    //       router.push("/teacher/dashboard")
-    //     } else {
-    //       router.push("/student/dashboard")
-    //     }
-    //   } else {
-    //     router.push("/auth/login")
-    //   }
-    //   setCheckingAuth(false)
-    // }
-  }, [router]);
-  // [isAuthenticated, userType, router]
-  if (checkingAuth) {
+    // Wait until auth state is initialized
+    if (!loading) {
+      if (user) {
+        // Redirect based on user role
+        router.push(
+          user.role === "teacher" ? "/teacher" : "/student"
+        );
+      } else {
+        // Redirect to login if not authenticated
+        router.push("/login");
+      }
+      setCheckingAuth(false);
+    }
+  }, [user, loading, router]);
+
+  if (checkingAuth || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <h1 className="text-2xl font-bold">Loading...</h1>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return null;
-}
+} 
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { useRouter } from "next/navigation";
+
+// export default function HomePage() {
+//   // const { isAuthenticated, userType } = useAuth()
+//   const router = useRouter();
+//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//   const [checkingAuth, setCheckingAuth] = useState(true);
+
+//   useEffect(() => {
+//     router.push("/login");
+//     // if (isAuthenticated !== undefined && userType !== undefined) {
+//     //   if (isAuthenticated) {
+//     //     if (userType === "teacher") {
+//     //       router.push("/teacher/dashboard")
+//     //     } else {
+//     //       router.push("/student/dashboard")
+//     //     }
+//     //   } else {
+//     //     router.push("/auth/login")
+//     //   }
+//     //   setCheckingAuth(false)
+//     // }
+//   }, [router]);
+//   // [isAuthenticated, userType, router]
+//   if (checkingAuth) {
+//     return (
+//       <div className="flex min-h-screen items-center justify-center">
+//         <h1 className="text-2xl font-bold">Loading...</h1>
+//       </div>
+//     );
+//   }
+
+//   return null;
+// }
 
 // import Image from "next/image";
 

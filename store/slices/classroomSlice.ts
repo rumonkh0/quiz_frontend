@@ -154,7 +154,7 @@ const classroomSlice = createSlice({
       })
       .addCase(updateClass.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.classes.findIndex((cls) => cls.id === action.payload._id);
+        const index = state.classes.findIndex((cls) => cls._id === action.payload._id);
         if (index !== -1) {
           state.classes[index] = action.payload;
         }
@@ -171,7 +171,7 @@ const classroomSlice = createSlice({
       })
       .addCase(deleteClass.fulfilled, (state, action) => {
         state.loading = false;
-        state.classes = state.classes.filter((cls) => cls.id !== action.payload);
+        state.classes = state.classes.filter((cls) => cls._id !== action.payload);
       })
       .addCase(deleteClass.rejected, (state, action) => {
         state.loading = false;
