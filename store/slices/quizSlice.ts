@@ -24,8 +24,9 @@ export const fetchClassQuizzes = createAsyncThunk<Quiz[], string>(
   "quiz/fetchClassQuizzes",
   async (classroomId: string, { rejectWithValue }) => {
     try {
-      return await QuizService.getClassQuizzes(classroomId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await QuizService.getClassQuizzes(classroomId);
+      return response.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch quizzes"
@@ -40,6 +41,9 @@ export const createNewQuiz = createAsyncThunk<
     classroomId: string;
     title: string;
     duration: number;
+    startsOn: Date;
+    isActive: boolean;
+    // questions: number;
   }
 >("quiz/create", async (quizData, { rejectWithValue }) => {
   try {
@@ -75,6 +79,7 @@ const quizSlice = createSlice({
       .addCase(fetchClassQuizzes.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.quizzes = [];
       })
       .addCase(fetchClassQuizzes.fulfilled, (state, action) => {
         state.loading = false;
@@ -90,7 +95,8 @@ const quizSlice = createSlice({
       })
       .addCase(createNewQuiz.fulfilled, (state, action) => {
         state.loading = false;
-        state.quizzes.push(action.payload);
+        const newQuiz = action.payload;
+        state.quizzes.push(newQuiz);
       })
       .addCase(createNewQuiz.rejected, (state, action) => {
         state.loading = false;

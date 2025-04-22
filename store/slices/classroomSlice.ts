@@ -140,7 +140,7 @@ const classroomSlice = createSlice({
       })
       .addCase(getClassById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedClass = action.payload;
+        state.selectedClass = action.payload.data;
       })
       .addCase(getClassById.rejected, (state, action) => {
         state.loading = false;

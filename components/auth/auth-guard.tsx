@@ -12,13 +12,14 @@ interface AuthGuardProps {
 const AuthGuard = ({ children, requiredRoles }: AuthGuardProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, token } = useAppSelector((state) => state.auth);
+  const { user, token, loading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // Check authentication status
+    if (loading) return;
     if (!token) {
-      router.push(`/login`);
-      // router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      // router.push(`/login`);
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 
@@ -26,7 +27,7 @@ const AuthGuard = ({ children, requiredRoles }: AuthGuardProps) => {
     if (requiredRoles && user?.role && !requiredRoles.includes(user.role)) {
       router.push("/unauthorized");
     }
-  }, [token, user, router, pathname, requiredRoles]);
+  }, [token, user, router, pathname, requiredRoles, loading]);
 
   // Optional: Show loading state
   if (!user || (requiredRoles && !requiredRoles.includes(user.role))) {

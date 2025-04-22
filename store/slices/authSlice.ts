@@ -10,7 +10,8 @@ import api from "@/lib/api/axios";
 // Initial state
 const initialState: AuthState = {
   user: null,
-  token: null,
+  token:
+    typeof window !== "undefined" ? localStorage.getItem("eduToken") : null,
   loading: false,
   error: null,
 };
@@ -63,22 +64,22 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
     setCredentials: (
       state,
       action: PayloadAction<{ user: User; token: string }>
     ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
-      if (typeof window !== "undefined") {
-        localStorage.setItem("eduToken", action.payload.token);
-      }
+      localStorage.setItem("eduToken", action.payload.token);
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       if (typeof window !== "undefined") {
-        console.log("to+++++++++++++++++++++++++++++++++++++++++++++++++++")
-        // localStorage.removeItem("eduToken");
+        localStorage.removeItem("eduToken");
       }
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -99,9 +100,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        if (typeof window !== "undefined") {
-          localStorage.setItem("eduToken", action.payload.token);
-        }
+        localStorage.setItem("eduToken", action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -117,9 +116,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        if (typeof window !== "undefined") {
-          localStorage.setItem("eduToken", action.payload.token);
-        }
+        localStorage.setItem("eduToken", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -133,7 +130,7 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.data;
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading = false;
@@ -142,6 +139,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout, setLoading, clearError } =
+export const { setToken, setCredentials, logout, setLoading, clearError } =
   authSlice.actions;
 export default authSlice.reducer;

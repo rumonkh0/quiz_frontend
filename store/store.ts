@@ -2,6 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import classroomReducer from "./slices/classroomSlice";
+import quizReducer from "./slices/quizSlice";
 import { injectStore } from "@/lib/api/axios"; // ⬅️ import this
 
 export function makeStore() {
@@ -9,6 +10,7 @@ export function makeStore() {
     reducer: {
       auth: authReducer,
       classroom: classroomReducer,
+      quiz: quizReducer
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>

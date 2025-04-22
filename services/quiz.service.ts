@@ -5,19 +5,19 @@ export const QuizService = {
     title: string;
     duration: number;
     classroomId: string;
-    questions: number;
+    // questions: number;
   }) => {
-    const response = await api.post('/quiz', quizData);
+    const response = await api.post('/quizzes', quizData);
     return response.data;
   },
 
   getClassQuizzes: async (classroomId: string) => {
-    const response = await api.get(`/quiz/classroom/${classroomId}`);
+    const response = await api.get(`/quizzes/classroom/${classroomId}`);
     return response.data;
   },
 
   getQuizDetails: async (quizId: string) => {
-    const response = await api.get(`/quiz/${quizId}`);
+    const response = await api.get(`/quizzes/${quizId}`);
     return response.data;
   },
 
@@ -26,17 +26,17 @@ export const QuizService = {
     duration?: number;
     isActive?: boolean;
   }) => {
-    const response = await api.put(`/quiz/${quizId}`, updateData);
+    const response = await api.put(`/quizzes/${quizId}`, updateData);
     return response.data;
   },
 
   deleteQuiz: async (quizId: string) => {
-    const response = await api.delete(`/quiz/${quizId}`);
+    const response = await api.delete(`/quizzes/${quizId}`);
     return response.data;
   },
 
   getLeaderboard: async (quizId: string) => {
-    const response = await api.get(`/quiz/${quizId}/leaderboard`);
+    const response = await api.get(`/quizzes/${quizId}/leaderboard`);
     return response.data;
   }
 };
