@@ -3,13 +3,14 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { getCurrentUser, setToken } from "@/store/slices/authSlice";
+import { store } from "@/store/store";
 
 export default function AuthInitializer() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem("eduToken");
+      const token = store.getState().auth.token;
       if (token) {
         dispatch(setToken(token));
         try {

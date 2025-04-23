@@ -17,7 +17,11 @@ export interface Question {
   text: string;
   options: string[];
   correctAnswer: number;
-  explanation?: string;
+}
+
+export interface QuizSubmission {
+  quizId: string;
+  answers: { [questionId: string]: string };
 }
 
 export interface Classroom {

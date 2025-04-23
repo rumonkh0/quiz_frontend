@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -24,13 +24,6 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  useEffect(() => {
-    // Redirect if not teacher or not authenticated
-    if (!authLoading && (!user || user.role !== "teacher")) {
-      router.push("/login");
-    }
-  }, [user, authLoading, router]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);

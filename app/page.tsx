@@ -15,9 +15,7 @@ export default function HomePage() {
     if (!loading) {
       if (user) {
         // Redirect based on user role
-        router.push(
-          user.role === "teacher" ? "/teacher" : "/student"
-        );
+        router.push(user.role === "teacher" ? "/teacher" : "/student");
       } else {
         // Redirect to login if not authenticated
         router.push("/login");
@@ -35,7 +33,7 @@ export default function HomePage() {
   }
 
   return null;
-} 
+}
 // "use client";
 
 // import { useEffect, useState } from "react";

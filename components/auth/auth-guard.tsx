@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
+import { Loader2 } from "lucide-react";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const AuthGuard = ({ children, requiredRoles }: AuthGuardProps) => {
     if (loading) return;
     if (!token) {
       // router.push(`/login`);
+      console.log("not authorized");
       router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
@@ -31,7 +33,12 @@ const AuthGuard = ({ children, requiredRoles }: AuthGuardProps) => {
 
   // Optional: Show loading state
   if (!user || (requiredRoles && !requiredRoles.includes(user.role))) {
-    return <div>Loading authentication status...</div>;
+    return (
+      <div>
+        Loading authentication status...
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      </div>
+    );
   }
 
   return <>{children}</>;

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { QuizService } from "@/services/quiz.service";
 
 import { Quiz, LeaderboardEntry } from "@/types/quiz.type";
+import api from "@/lib/api/axios";
 
 interface QuizState {
   quizzes: Quiz[];
@@ -60,11 +61,32 @@ export const fetchQuizDetails = createAsyncThunk(
   "quiz/fetchDetails",
   async (quizId: string, { rejectWithValue }) => {
     try {
-      return await QuizService.getQuizDetails(quizId);
+      const response = await QuizService.getQuizDetails(quizId);
+      return response.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch quiz details"
+      );
+    }
+  }
+);
+
+export const submitQuizAnswers = createAsyncThunk(
+  "quiz/submit",
+  async (
+    submission: { quizId: string; answers: { [key: string]: string } },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.post(`/quizzes/${submission.quizId}/submit`, {
+        answers: submission.answers,
+      });
+      return response.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Submission failed"
       );
     }
   }
