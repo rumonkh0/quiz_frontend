@@ -6,13 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchQuizDetails, submitQuizAnswers } from "@/store/slices/quizSlice";
 import { getQuestionsByQuiz } from "@/store/slices/questionSlice";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -25,25 +19,17 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 export default function TakeQuiz() {
   // Use the useParams hook to get route parameters
   const { id, quizId } = useParams<{ id: string; quizId: string }>();
-
+  
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {
-    currentQuiz: quiz,
-    loading: quizLoading,
-    error: quizError,
-  } = useAppSelector((state) => state.quiz);
-  const {
-    questions,
-    loading: questionsLoading,
-    error: questionsError,
-  } = useAppSelector((state) => state.question);
-
+  const { currentQuiz: quiz, loading: quizLoading, error: quizError } = useAppSelector((state) => state.quiz);
+  const { questions, loading: questionsLoading, error: questionsError } = useAppSelector((state) => state.question);
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   const loading = quizLoading || questionsLoading;
   const error = quizError || questionsError;
 
@@ -78,6 +64,7 @@ export default function TakeQuiz() {
     }, 1000);
 
     return () => clearInterval(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft]);
 
   const handleAnswerSelect = (questionId: string, answerId: string) => {
@@ -101,14 +88,12 @@ export default function TakeQuiz() {
     if (!questions?.length || !quizId) return;
 
     // Check if all questions are answered
-    const unansweredQuestions = questions.filter((q) => !answers[q._id]);
+    const unansweredQuestions = questions.filter(
+      (q) => !answers[q._id]
+    );
 
     if (unansweredQuestions.length > 0 && timeLeft && timeLeft > 0) {
-      if (
-        !confirm(
-          `You have ${unansweredQuestions.length} unanswered questions. Are you sure you want to submit?`
-        )
-      ) {
+      if (!confirm(`You have ${unansweredQuestions.length} unanswered questions. Are you sure you want to submit?`)) {
         return;
       }
     }
@@ -119,13 +104,13 @@ export default function TakeQuiz() {
       await dispatch(
         submitQuizAnswers({
           quizId: quizId as string,
-          answers: answers,
+          answers: answers
         })
       ).unwrap();
 
       toast.success("Quiz submitted successfully!");
       router.push(`/student/classroom/${id}/quiz/${quizId}/results`);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Failed to submit quiz. Please try again.");
       setIsSubmitting(false);
@@ -139,20 +124,17 @@ export default function TakeQuiz() {
   };
 
   if (error) {
-    toast.error(typeof error === "string" ? error : "Failed to load quiz");
+    toast.error(typeof error === 'string' ? error : 'Failed to load quiz');
   }
 
   // Show loading or error state if data isn't available yet
   if (!quiz || !questions?.length) {
     return (
       <div className="container mx-auto p-6">
-        <Link
-          href={`/student/classroom/${id}`}
-          className="inline-flex items-center mb-6 text-sm hover:underline"
-        >
+        <Link href={`/student/classroom/${id}`} className="inline-flex items-center mb-6 text-sm hover:underline">
           &larr; Back to Class
         </Link>
-
+        
         {loading ? (
           <div className="space-y-4">
             <Skeleton className="h-10 w-1/3" />
@@ -162,13 +144,8 @@ export default function TakeQuiz() {
         ) : (
           <div className="text-center py-12">
             <h2 className="text-xl font-semibold mb-2">Quiz not available</h2>
-            <p className="text-muted-foreground">
-              This quiz may not be active or doesn&apos;t exist
-            </p>
-            <Button
-              className="mt-4"
-              onClick={() => router.push(`/student/classroom/${id}`)}
-            >
+            <p className="text-muted-foreground">This quiz may not be active or doesn&apos;t exist</p>
+            <Button className="mt-4" onClick={() => router.push(`/student/classroom/${id}`)}>
               Go Back to Class
             </Button>
           </div>
@@ -221,9 +198,7 @@ export default function TakeQuiz() {
             {timeLeft !== null && timeLeft > 0 && (
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                <span
-                  className={`font-mono ${timeLeft < 60 ? "text-red-500" : ""}`}
-                >
+                <span className={`font-mono ${timeLeft < 60 ? "text-red-500" : ""}`}>
                   {formatTime(timeLeft)}
                 </span>
               </div>
@@ -232,12 +207,11 @@ export default function TakeQuiz() {
 
           {answeredCount < questions.length && (
             <Alert variant="default" className="mb-6">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                You have answered {answeredCount} out of {questions.length}{" "}
-                questions
-              </AlertDescription>
-            </Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              You have answered {answeredCount} out of {questions.length} questions
+            </AlertDescription>
+          </Alert>
           )}
 
           {currentQuestion && (
@@ -255,38 +229,32 @@ export default function TakeQuiz() {
               <CardContent>
                 <RadioGroup
                   value={answers[currentQuestion._id] || ""}
-                  onValueChange={(value) =>
-                    handleAnswerSelect(currentQuestion._id, value)
-                  }
+                  onValueChange={(value) => handleAnswerSelect(currentQuestion._id, value)}
                 >
-                  {Array.isArray(currentQuestion.options) &&
-                    currentQuestion.options.map((option, index) => (
-                      <div
-                        key={`option-${index}`}
-                        className="flex items-center space-x-2 py-2"
-                      >
-                        <RadioGroupItem
-                          value={index.toString()}
-                          id={`option-${index}`}
-                        />
-                        <Label htmlFor={`option-${index}`} className="flex-1">
-                          {option}
-                        </Label>
-                      </div>
-                    ))}
+                  {Array.isArray(currentQuestion.options) && currentQuestion.options.map((optionIdx, option) => (
+                    <div key={optionIdx} className="flex items-center space-x-2 py-2">
+                      <RadioGroupItem value={optionIdx} id={optionIdx} />
+                      <Label htmlFor={optionIdx} className="flex-1">
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
                 </RadioGroup>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
+                <Button 
+                  variant="outline" 
                   onClick={goToPreviousQuestion}
                   disabled={currentQuestionIndex === 0}
                 >
                   Previous
                 </Button>
-
+                
                 {currentQuestionIndex === questions.length - 1 ? (
-                  <Button onClick={handleSubmitQuiz} disabled={isSubmitting}>
+                  <Button 
+                    onClick={handleSubmitQuiz}
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "Submitting..." : "Submit Quiz"}
                   </Button>
                 ) : (
@@ -297,14 +265,17 @@ export default function TakeQuiz() {
           )}
 
           <div className="flex justify-between mt-6">
-            <Button
-              variant="outline"
+            <Button 
+              variant="outline" 
               onClick={() => router.push(`/student/classroom/${id}`)}
             >
               Cancel
             </Button>
-
-            <Button onClick={handleSubmitQuiz} disabled={isSubmitting}>
+            
+            <Button 
+              onClick={handleSubmitQuiz}
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Submitting..." : "Submit Quiz"}
             </Button>
           </div>
