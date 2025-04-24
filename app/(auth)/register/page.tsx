@@ -70,10 +70,12 @@ export default function RegisterPage() {
         })
       ).unwrap();
 
-      if (result.user) {
-        router.push("/dashboard");
+      if (result.user.role === "teacher") {
+        router.push("/teacher");
+      } else {
+        router.push("/student");
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Error is handled by Redux store
     }
@@ -175,7 +177,11 @@ export default function RegisterPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col mt-2 space-y-2">
-            <Button type="submit" className="w-full cursor-pointer" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full cursor-pointer"
+              disabled={loading}
+            >
               {loading ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />

@@ -10,7 +10,6 @@ import {
   BookOpen,
   GraduationCap,
   Home,
-  LayoutDashboard,
   LogOut,
   Settings,
   User,
@@ -18,7 +17,7 @@ import {
 import AuthGuard from "@/components/auth/auth-guard";
 import { Loader2 } from "lucide-react";
 
-export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
+export function StudentDashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -44,28 +43,28 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthGuard requiredRoles={["teacher"]}>
+    <AuthGuard requiredRoles={["student"]}>
       <div className="flex min-h-screen flex-col bg-slate-50">
         <header className="sticky top-0 z-10 flex h-16 items-center border-b bg-white px-4 md:px-6">
           <Link
-            href="/teacher"
+            href="/student/dashboard"
             className="flex items-center gap-2 font-semibold"
           >
             <GraduationCap className="h-6 w-6" />
-            <span>EduPlatform</span>
+            <span>QuizMaster</span>
             <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600">
-              Teacher
+              Student
             </span>
           </Link>
           <nav className="ml-auto flex items-center gap-4">
             <Button variant="ghost" size="icon" asChild>
-              <Link href="/teacher/profile">
+              <Link href="/student/profile">
                 <User className="h-5 w-5" />
                 <span className="sr-only">Profile</span>
               </Link>
             </Button>
             <Button variant="ghost" size="icon" asChild>
-              <Link href="/teacher/settings">
+              <Link href="/student/settings">
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">Settings</span>
               </Link>
@@ -90,38 +89,26 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
             <nav className="flex flex-col gap-2 p-4">
               <Button
                 variant={
-                  pathname === "/teacher" ? "default" : "ghost"
+                  pathname === "/student/dashboard" ? "default" : "ghost"
                 }
                 className="justify-start"
                 asChild
               >
-                <Link href="/teacher/">
+                <Link href="/student/dashboard">
                   <Home className="mr-2 h-5 w-5" />
                   Dashboard
                 </Link>
               </Button>
               <Button
                 variant={
-                  pathname.includes("/teacher/classes") ? "default" : "ghost"
+                  pathname.includes("/student/classes") ? "default" : "ghost"
                 }
                 className="justify-start"
                 asChild
               >
-                <Link href="/teacher/classes">
+                <Link href="/student/classes">
                   <BookOpen className="mr-2 h-5 w-5" />
                   Classes
-                </Link>
-              </Button>
-              <Button
-                variant={
-                  pathname.includes("/teacher/analytics") ? "default" : "ghost"
-                }
-                className="justify-start"
-                asChild
-              >
-                <Link href="/teacher/analytics">
-                  <LayoutDashboard className="mr-2 h-5 w-5" />
-                  Analytics
                 </Link>
               </Button>
             </nav>

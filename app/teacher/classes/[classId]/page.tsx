@@ -26,7 +26,10 @@ import {
 import { PlusCircle, Clock, Users, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { createNewQuiz, fetchClassQuizzes } from "@/store/slices/quizSlice";
-import { getClassById } from "@/store/slices/classroomSlice";
+import {
+  getClassById,
+  removeStudentFromClass,
+} from "@/store/slices/classroomSlice";
 import AuthGuard from "@/components/auth/auth-guard";
 import { TeacherDashboardLayout } from "@/components/TeacherDashboardLayout";
 
@@ -74,6 +77,17 @@ export default function ClassDetailPage() {
       setStartsOn(""); // Reset the startsOn field
       setIsActive(true); // Reset the isActive field
     }
+  };
+
+  const handleRemoveStudent = (studentId: string) => {
+    if (!selectedClass) return;
+
+    dispatch(
+      removeStudentFromClass({
+        classroomId: selectedClass._id,
+        studentId,
+      })
+    );
   };
 
   if (classLoading) {
@@ -241,8 +255,10 @@ export default function ClassDetailPage() {
             <TabsContent value="students" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Enrolled Students</CardTitle>
-                  <CardDescription>Class participants</CardDescription>
+                  <CardTitle>
+                    Enrolled Students ({selectedClass.students?.length})
+                  </CardTitle>
+                  {/* <CardDescription>Class participants</CardDescription> */}
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -256,14 +272,22 @@ export default function ClassDetailPage() {
                             <Users className="h-5 w-5 text-slate-600" />
                           </div>
                           <div>
-                            <p className="font-medium">{student.name}</p>
+                            <p className="font-medium">
+                              {student.firstName} {student.lastName}
+                            </p>
                             <p className="text-sm text-muted-foreground">
                               {student.email}
                             </p>
                           </div>
                         </div>
-                        <div className="text-sm">
-                          <p>Completed: {student.completedQuizzes} quizzes</p>
+                        <div>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleRemoveStudent(student._id)}
+                          >
+                            Remove
+                          </Button>
                         </div>
                       </div>
                     ))}

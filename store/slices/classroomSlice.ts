@@ -17,9 +17,25 @@ export const getTeacherClasses = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await ClassroomService.getTeacherClasses();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch classes");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch classes"
+      );
+    }
+  }
+);
+
+export const getStudentClasses = createAsyncThunk(
+  "classroom/getStudentClasses",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await ClassroomService.getStudentClasses();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch student classes"
+      );
     }
   }
 );
@@ -29,9 +45,11 @@ export const createClass = createAsyncThunk(
   async (classData: { name: string }, { rejectWithValue }) => {
     try {
       return await ClassroomService.createClass(classData);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to create class");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create class"
+      );
     }
   }
 );
@@ -41,21 +59,28 @@ export const getClassById = createAsyncThunk(
   async (classId: string, { rejectWithValue }) => {
     try {
       return await ClassroomService.getClassById(classId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch class");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch class"
+      );
     }
   }
 );
 
 export const updateClass = createAsyncThunk(
   "classroom/updateClass",
-  async ({ id, classData }: { id: string; classData: { name: string } }, { rejectWithValue }) => {
+  async (
+    { id, classData }: { id: string; classData: { name: string } },
+    { rejectWithValue }
+  ) => {
     try {
       return await ClassroomService.updateClass(id, classData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to update class");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update class"
+      );
     }
   }
 );
@@ -68,7 +93,9 @@ export const deleteClass = createAsyncThunk(
       return id;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to delete class");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete class"
+      );
     }
   }
 );
@@ -77,22 +104,31 @@ export const joinClass = createAsyncThunk(
   "classroom/joinClass",
   async ({ classCode }: { classCode: string }, { rejectWithValue }) => {
     try {
-      return await ClassroomService.joinClass(classCode);
+      const response = await ClassroomService.joinClass(classCode);
+      return response.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to join class");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to join class"
+      );
     }
   }
 );
 
 export const removeStudentFromClass = createAsyncThunk(
   "classroom/removeStudentFromClass",
-  async ({ id, studentId }: { id: string; studentId: string }, { rejectWithValue }) => {
+  async (
+    { classroomId, studentId }: { classroomId: string; studentId: string },
+    { rejectWithValue }
+  ) => {
     try {
-      return await ClassroomService.removeStudent(id, studentId);
+      await ClassroomService.removeStudent(classroomId, studentId);
+      return studentId;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to remove student");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to remove student"
+      );
     }
   }
 );
@@ -105,7 +141,7 @@ const classroomSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Get All Classes
+      // Get All Classes (Teacher)
       .addCase(getTeacherClasses.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -115,6 +151,20 @@ const classroomSlice = createSlice({
         state.classes = action.payload.data;
       })
       .addCase(getTeacherClasses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Get All Classes (Student)
+      .addCase(getStudentClasses.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getStudentClasses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.classes = action.payload.data;
+      })
+      .addCase(getStudentClasses.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -154,7 +204,9 @@ const classroomSlice = createSlice({
       })
       .addCase(updateClass.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.classes.findIndex((cls) => cls._id === action.payload._id);
+        const index = state.classes.findIndex(
+          (cls) => cls._id === action.payload._id
+        );
         if (index !== -1) {
           state.classes[index] = action.payload;
         }
@@ -171,7 +223,9 @@ const classroomSlice = createSlice({
       })
       .addCase(deleteClass.fulfilled, (state, action) => {
         state.loading = false;
-        state.classes = state.classes.filter((cls) => cls._id !== action.payload);
+        state.classes = state.classes.filter(
+          (cls) => cls._id !== action.payload
+        );
       })
       .addCase(deleteClass.rejected, (state, action) => {
         state.loading = false;
@@ -200,11 +254,11 @@ const classroomSlice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .addCase(removeStudentFromClass.fulfilled, (state, action) => {
         state.loading = false;
-        // if (state.selectedClass) {
-        //   state.selectedClass.students = state.selectedClass.students.filter(
-        //     (student) => student.id !== action.payload.studentId
-        //   );
-        // }
+        if (state.selectedClass) {
+          state.selectedClass.students = state.selectedClass.students.filter(
+            (student) => student._id !== action.payload
+          );
+        }
       })
       .addCase(removeStudentFromClass.rejected, (state, action) => {
         state.loading = false;

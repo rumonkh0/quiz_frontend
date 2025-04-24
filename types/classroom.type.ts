@@ -15,15 +15,14 @@ export interface Classroom {
 
 interface Student {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   completedQuizzes: number;
 }
-  export interface ClassroomState {
-    classes: Classroom[];
-    loading: boolean;
-    selectedClass: Classroom | null;
-    error: string | null;
-  }
-
-  
+export interface ClassroomState {
+  classes: Classroom[];
+  loading: boolean;
+  selectedClass: Classroom | null;
+  error: string | null;
+}

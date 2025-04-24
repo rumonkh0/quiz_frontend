@@ -1,4 +1,4 @@
-import api from '@/lib/api/axios';
+import api from "@/lib/api/axios";
 
 export const QuizService = {
   createQuiz: async (quizData: {
@@ -7,7 +7,7 @@ export const QuizService = {
     classroomId: string;
     // questions: number;
   }) => {
-    const response = await api.post('/quizzes', quizData);
+    const response = await api.post("/quizzes", quizData);
     return response.data;
   },
 
@@ -21,11 +21,15 @@ export const QuizService = {
     return response.data;
   },
 
-  updateQuiz: async (quizId: string, updateData: {
-    title?: string;
-    duration?: number;
-    isActive?: boolean;
-  }) => {
+  updateQuiz: async (
+    quizId: string,
+    updateData: {
+      title?: string;
+      duration?: number;
+      startOn?: Date;
+      isActive?: boolean;
+    }
+  ) => {
     const response = await api.put(`/quizzes/${quizId}`, updateData);
     return response.data;
   },
@@ -38,5 +42,5 @@ export const QuizService = {
   getLeaderboard: async (quizId: string) => {
     const response = await api.get(`/quizzes/${quizId}/leaderboard`);
     return response.data;
-  }
+  },
 };

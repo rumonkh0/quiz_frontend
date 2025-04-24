@@ -1,15 +1,21 @@
-import api from '@/lib/api/axios';
+import api from "@/lib/api/axios";
 
 export const ClassroomService = {
   // GET /classes -> Get all classes for teacher
   getTeacherClasses: async () => {
-    const response = await api.get('/classrooms');
+    const response = await api.get("/classrooms");
+    return response.data;
+  },
+
+  // GET /classrooms/student -> Get all classes for student
+  getStudentClasses: async () => {
+    const response = await api.get("/classrooms/student");
     return response.data;
   },
 
   // POST /classrooms -> Create a new class
   createClass: async (classData: { name: string }) => {
-    const response = await api.post('/classrooms', classData);
+    const response = await api.post("/classrooms", classData);
     return response.data;
   },
 
@@ -33,13 +39,15 @@ export const ClassroomService = {
 
   // POST /classrooms/join -> Join a class (students)
   joinClass: async (classCode: string) => {
-    const response = await api.post('/classrooms/join', { classCode });
+    const response = await api.post("/classrooms/join", { code: classCode });
     return response.data;
   },
 
   // PUT /classrooms/:id/remove-student -> Remove a student from class
   removeStudent: async (id: string, studentId: string) => {
-    const response = await api.put(`/classrooms/${id}/remove-student`, { studentId });
+    const response = await api.put(`/classrooms/${id}/remove-student`, {
+      studentId,
+    });
     return response.data;
   },
 };

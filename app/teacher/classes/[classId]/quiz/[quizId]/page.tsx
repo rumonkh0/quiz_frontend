@@ -10,7 +10,7 @@ import {
   deleteQuestion,
   getQuestionsByQuiz,
 } from "@/store/slices/questionSlice";
-import { fetchQuizDetails } from "@/store/slices/quizSlice";
+import { fetchQuizDetails, updateQuiz } from "@/store/slices/quizSlice";
 import { TeacherDashboardLayout } from "@/components/TeacherDashboardLayout";
 import {
   Dialog,
@@ -35,6 +35,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Question } from "@/types/quiz.type";
+// import { Pencil } from "lucide-react";
 
 export default function TeacherQuizPage() {
   const { quizId } = useParams<{ classId: string; quizId: string }>();
@@ -53,6 +54,30 @@ export default function TeacherQuizPage() {
   const [questionText, setQuestionText] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
   const [correctAnswer, setCorrectAnswer] = useState(0);
+
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isEditingDuration, setIsEditingDuration] = useState(false);
+  const [isEditingStartson, setIsEditingStartson] = useState(false);
+
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedDuration, setEditedDuration] = useState("");
+  const [editedStartson, setEditedStartson] = useState(() => {
+    if (currentQuiz?.startsOn) {
+      return new Date(currentQuiz.startsOn).toISOString().slice(0, 16);
+    }
+    return "";
+  });
+  // When currentQuiz is fetched and available, update the states
+  useEffect(() => {
+    if (currentQuiz) {
+      setIsActive(currentQuiz.isActive);
+      setEditedTitle(currentQuiz.title);
+      setEditedDuration(currentQuiz.duration.toString());
+      setEditedStartson(
+        new Date(currentQuiz.startsOn).toISOString().slice(0, 16) || ""
+      );
+    }
+  }, [currentQuiz]);
 
   useEffect(() => {
     if (quizId) {
@@ -111,6 +136,21 @@ export default function TeacherQuizPage() {
     setIsDialogOpen(true);
   };
 
+  const handleSaveChanges = () => {
+    if (!currentQuiz) return;
+    dispatch(
+      updateQuiz({
+        quizId: currentQuiz._id,
+        updatedData: {
+          title: editedTitle,
+          duration: Number(editedDuration),
+          startsOn: new Date(editedStartson),
+          isActive: isActive,
+        },
+      })
+    );
+  };
+
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this question?")) {
       await dispatch(deleteQuestion(id));
@@ -147,16 +187,105 @@ export default function TeacherQuizPage() {
     <TeacherDashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">{currentQuiz.title}</h1>
-            <div className="flex items-center space-x-4 text-muted-foreground">
-              <div className="flex items-center">
-                <Clock className="mr-1 h-4 w-4" />
-                <span>{currentQuiz.duration} minutes</span>
-              </div>
-              <div>{questions.length} questions</div>
+          <div className="flex flex-col gap-2">
+            {/* Title */}
+            <div className="flex items-center gap-2">
+              {isEditingTitle ? (
+                <Input
+                  className="w-auto"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onBlur={() => setIsEditingTitle(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setIsEditingTitle(false);
+                    }
+                  }}
+                  autoFocus
+                />
+              ) : (
+                <>
+                  <h1 className="text-2xl font-bold">{editedTitle}</h1>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => setIsEditingTitle(true)}
+                  >
+                    ✏️
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* Duration */}
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Clock className="mr-1 h-4 w-4" />
+              {isEditingDuration ? (
+                <Input
+                  className="w-20"
+                  value={editedDuration}
+                  onChange={(e) => setEditedDuration(e.target.value)}
+                  onBlur={() => setIsEditingDuration(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setIsEditingDuration(false);
+                    }
+                  }}
+                  autoFocus
+                />
+              ) : (
+                <>
+                  <span>{editedDuration} minutes</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5"
+                    onClick={() => setIsEditingDuration(true)}
+                  >
+                    ✏️
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* Startson */}
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <span>Start Date:</span>
+              {isEditingStartson ? (
+                <Input
+                  type="datetime-local"
+                  className="w-auto"
+                  value={editedStartson}
+                  onChange={(e) => setEditedStartson(e.target.value)}
+                  onBlur={() => setIsEditingStartson(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setIsEditingStartson(false);
+                    }
+                  }}
+                  autoFocus
+                />
+              ) : (
+                <>
+                  <span>
+                    {editedStartson
+                      ? new Date(editedStartson).toLocaleString()
+                      : "Not set"}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5"
+                    onClick={() => setIsEditingStartson(true)}
+                  >
+                    ✏️
+                  </Button>
+                </>
+              )}
             </div>
           </div>
+
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Switch
@@ -166,7 +295,7 @@ export default function TeacherQuizPage() {
               />
               <Label htmlFor="active">{isActive ? "Active" : "Inactive"}</Label>
             </div>
-            <Button>Save Changes</Button>
+            <Button onClick={handleSaveChanges}>Save Changes</Button>
           </div>
         </div>
 

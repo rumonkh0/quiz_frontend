@@ -57,6 +57,21 @@ export const createNewQuiz = createAsyncThunk<
   }
 });
 
+export const updateQuiz = createAsyncThunk<
+  Quiz, // Return type
+  { quizId: string; updatedData: Partial<Quiz> } // Argument type
+>("quiz/updateQuiz", async ({ quizId, updatedData }, { rejectWithValue }) => {
+  try {
+    const response = await QuizService.updateQuiz(quizId, updatedData);
+    return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to update quiz"
+    );
+  }
+});
+
 export const fetchQuizDetails = createAsyncThunk(
   "quiz/fetchDetails",
   async (quizId: string, { rejectWithValue }) => {
@@ -124,6 +139,32 @@ const quizSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      .addCase(updateQuiz.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateQuiz.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedQuiz = action.payload;
+        console.log("fron here");
+
+        // Update the quizzes array
+        const index = state.quizzes.findIndex((q) => q._id === updatedQuiz._id);
+        if (index !== -1) {
+          state.quizzes[index] = updatedQuiz;
+        }
+
+        // If currentQuiz is open, update it too
+        if (state.currentQuiz?._id === updatedQuiz._id) {
+          console.log("hi current is updated")
+          state.currentQuiz = updatedQuiz;
+        }
+      })
+      .addCase(updateQuiz.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
       .addCase(fetchQuizDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
