@@ -66,7 +66,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Login to EduPlatform</CardTitle>
+          <CardTitle className="text-2xl">Login to Quiz MasterPro</CardTitle>
           <CardDescription>
             Enter your credentials to access your account
           </CardDescription>

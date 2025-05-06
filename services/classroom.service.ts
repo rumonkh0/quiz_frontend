@@ -50,4 +50,10 @@ export const ClassroomService = {
     });
     return response.data;
   },
+
+  // POST /classrooms/:id/leave -> Leave a class (students)
+  leaveClass: async (classId: string) => {
+    const response = await api.post(`/classrooms/${classId}/leave`);
+    return response.data;
+  },
 };

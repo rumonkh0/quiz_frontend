@@ -85,7 +85,7 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Create EduPlatform Account</CardTitle>
+          <CardTitle className="text-2xl">Create Quiz MasterPro Account</CardTitle>
           <CardDescription>
             Join as Student, Teacher, or Administrator
           </CardDescription>

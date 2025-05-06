@@ -20,6 +20,7 @@ import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { StudentDashboardLayout } from "@/components/StudentDashboardLayout";
 
 export default function ClassroomDetail() {
   // Get the id parameter using useParams hook
@@ -52,13 +53,14 @@ export default function ClassroomDetail() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <Link
-        href="/student"
-        className="inline-flex items-center mb-6 text-sm hover:underline"
-      >
-        &larr; Back to Classes
-      </Link>
+    <StudentDashboardLayout>
+      <div>
+        <Link
+          href="/student"
+          className="inline-flex items-center mb-6 text-sm hover:underline"
+        >
+          &larr; Back to Classes
+        </Link>
 
       {loading || !selectedClass ? (
         <div className="space-y-4">
@@ -205,7 +207,8 @@ export default function ClassroomDetail() {
           </Tabs>
         </>
       )}
-    </div>
+      </div>
+    </StudentDashboardLayout>
   );
 }
 

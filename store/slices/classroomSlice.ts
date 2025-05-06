@@ -133,6 +133,21 @@ export const removeStudentFromClass = createAsyncThunk(
   }
 );
 
+export const leaveClass = createAsyncThunk(
+  "classroom/leaveClass",
+  async (classId: string, { rejectWithValue }) => {
+    try {
+      const data = await ClassroomService.leaveClass(classId);
+      return data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to leave class"
+      );
+    }
+  }
+);
+
 // Slice
 
 const classroomSlice = createSlice({
@@ -261,6 +276,23 @@ const classroomSlice = createSlice({
         }
       })
       .addCase(removeStudentFromClass.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      
+      // Leave Class
+      .addCase(leaveClass.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(leaveClass.fulfilled, (state, action) => {
+        state.loading = false;
+        // Remove the class from the list of classes
+        state.classes = state.classes.filter(
+          (classItem) => classItem._id !== action.meta.arg
+        );
+      })
+      .addCase(leaveClass.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -23,6 +23,12 @@ export function StudentDashboardLayout({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  // This ensures we only render dynamic content after hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -34,7 +40,17 @@ export function StudentDashboardLayout({ children }: { children: ReactNode }) {
     }
   };
 
-  if (authLoading || (!user && !authLoading)) {
+  // Initial loading state - consistent between server and client
+  if (!isClient) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // Client-side only rendering of auth states
+  if (isClient && (authLoading || (!user && !authLoading))) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -47,8 +63,9 @@ export function StudentDashboardLayout({ children }: { children: ReactNode }) {
       <div className="flex min-h-screen flex-col bg-slate-50">
         <header className="sticky top-0 z-10 flex h-16 items-center border-b bg-white px-4 md:px-6">
           <Link
-            href="/student/dashboard"
+            href="/student"
             className="flex items-center gap-2 font-semibold"
+            suppressHydrationWarning
           >
             <GraduationCap className="h-6 w-6" />
             <span>QuizMaster</span>
@@ -89,24 +106,26 @@ export function StudentDashboardLayout({ children }: { children: ReactNode }) {
             <nav className="flex flex-col gap-2 p-4">
               <Button
                 variant={
-                  pathname === "/student/dashboard" ? "default" : "ghost"
+                  pathname === "/student" ? "default" : "ghost"
                 }
+                suppressHydrationWarning
                 className="justify-start"
                 asChild
               >
-                <Link href="/student/dashboard">
+                <Link href="/student">
                   <Home className="mr-2 h-5 w-5" />
                   Dashboard
                 </Link>
               </Button>
               <Button
                 variant={
-                  pathname.includes("/student/classes") ? "default" : "ghost"
+                  pathname.includes("/student/classroom") ? "default" : "ghost"
                 }
+                suppressHydrationWarning
                 className="justify-start"
                 asChild
               >
-                <Link href="/student/classes">
+                <Link href="/student">
                   <BookOpen className="mr-2 h-5 w-5" />
                   Classes
                 </Link>

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EduPlatform - Learning Management System",
+  title: "Online Quiz MasterPro",
   description: "Interactive learning platform for students, teachers, and administrators",
   // themeColor: "#ffffff",
   icons: {

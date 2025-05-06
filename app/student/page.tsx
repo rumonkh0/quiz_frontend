@@ -10,13 +10,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { StudentDashboardLayout } from "@/components/StudentDashboardLayout";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getStudentClasses, joinClass } from "@/store/slices/classroomSlice";
+import { getStudentClasses, joinClass, leaveClass } from "@/store/slices/classroomSlice";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MoreVertical } from "lucide-react";
 
 export default function StudentDashboardPage() {
   const dispatch = useAppDispatch();
@@ -44,6 +51,18 @@ export default function StudentDashboardPage() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Error is already handled in the slice
+    }
+  };
+
+  const handleLeaveClass = async (classId: string) => {
+    if (confirm("Are you sure you want to leave this class?")) {
+      try {
+        await dispatch(leaveClass(classId)).unwrap();
+        toast.success("Successfully left the class");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        // Error is already handled in the slice
+      }
     }
   };
 
@@ -110,12 +129,30 @@ export default function StudentDashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {classes.map((classItem) => (
               <Card key={classItem._id} className="overflow-hidden">
-                <CardHeader className="pb-2">
-                  <CardTitle>{classItem.name}</CardTitle>
-                  <CardDescription>
-                    Teacher: {classItem.teacher.firstName}{" "}
-                    {classItem.teacher.lastName}
-                  </CardDescription>
+                <CardHeader className="pb-2 flex flex-row justify-between items-start">
+                  <div>
+                    <CardTitle>{classItem.name}</CardTitle>
+                    <CardDescription>
+                      Teacher: {classItem.teacher.firstName}{" "}
+                      {classItem.teacher.lastName}
+                    </CardDescription>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                        <MoreVertical className="h-4 w-4" />
+                        <span className="sr-only">Open menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem 
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => handleLeaveClass(classItem._id)}
+                      >
+                        Leave Class
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm">Code: {classItem.code}</p>

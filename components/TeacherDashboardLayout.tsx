@@ -52,7 +52,7 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
             className="flex items-center gap-2 font-semibold"
           >
             <GraduationCap className="h-6 w-6" />
-            <span>EduPlatform</span>
+            <span>Online Quiz MasterPro</span>
             <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600">
               Teacher
             </span>
@@ -107,7 +107,7 @@ export function TeacherDashboardLayout({ children }: { children: ReactNode }) {
                 className="justify-start"
                 asChild
               >
-                <Link href="/teacher/classes">
+                <Link href="/teacher">
                   <BookOpen className="mr-2 h-5 w-5" />
                   Classes
                 </Link>
